@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Notiflix from 'notiflix';
 import PropTypes from 'prop-types';
 import { FcSearch } from 'react-icons/fc';
@@ -10,43 +10,40 @@ import {
   SearchFormInput,
 } from './Searchbar.styled';
 
-export default class SearchBar extends Component {
-  state = {
-    search: '',
+export default function SearchBar({ onSubmit }) {
+  const [search, setSearch] = useState('');
+  const handleChange = e => {
+    setSearch(e.currentTarget.value.toLowerCase());
   };
-  handleChange = e => {
-    this.setState({ search: e.currentTarget.value.toLowerCase() });
-  };
-  handleSumbit = e => {
+  const handleSumbit = e => {
     e.preventDefault();
-    if (this.state.search.trim() === '') {
+    if (search.trim() === '') {
       Notiflix.Notify.failure('Enter the name of the images to search');
       return;
     }
-    this.props.onSubmit(this.state.search);
-    this.setState({ search: '' });
+    onSubmit(search);
+    setSearch('');
   };
-  render() {
-    return (
-      <Searchbar>
-        <SearchForm onSubmit={this.handleSumbit}>
-          <SearchFormButton type="submit">
-            <FcSearch size="40px" />
-            <SearchFormLabel>Search</SearchFormLabel>
-          </SearchFormButton>
-          <SearchFormInput
-            name="search"
-            type="text"
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={this.state.search}
-            onChange={this.handleChange}
-          />
-        </SearchForm>
-      </Searchbar>
-    );
-  }
+
+  return (
+    <Searchbar>
+      <SearchForm onSubmit={handleSumbit}>
+        <SearchFormButton type="submit">
+          <FcSearch size="40px" />
+          <SearchFormLabel>Search</SearchFormLabel>
+        </SearchFormButton>
+        <SearchFormInput
+          name="search"
+          type="text"
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={search}
+          onChange={handleChange}
+        />
+      </SearchForm>
+    </Searchbar>
+  );
 }
 
 SearchBar.propTypes = {
